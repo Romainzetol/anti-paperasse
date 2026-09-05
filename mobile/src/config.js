@@ -1,8 +1,8 @@
-// En dev avec Expo Go sur un vrai téléphone, "localhost" pointe vers le téléphone
-// lui-même, pas vers ton ordinateur. Remplace par l'adresse IP locale de ta machine
-// (ex: 192.168.1.23), trouvable avec `ipconfig` (Windows) sur le même réseau Wi-Fi
-// que ton téléphone. Garde le port 3000 (celui du backend).
-export const API_BASE_URL = "https://merchandise-columns-msie-sustainability.trycloudflare.com";
+// Backend hébergé sur Render (voir backend/render.yaml et README, section
+// "Déploiement"). Plan gratuit : peut mettre 30-50s à répondre après une période
+// d'inactivité (voir IMAGE_REQUEST_TIMEOUT_MS dans api.js) — passe sur le plan payant
+// Render si ça devient gênant, sans avoir à retoucher cette valeur.
+export const API_BASE_URL = "https://anti-paperasse.onrender.com";
 
 // Doit correspondre à APP_SHARED_SECRET dans backend/.env. Protection basique contre
 // l'abus de l'API (voir le commentaire dans backend/.env.example) — pas une vraie
