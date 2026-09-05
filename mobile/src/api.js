@@ -22,8 +22,8 @@ function buildImageFormData(imageUri, extraFields = {}) {
 // trafic et met 30-50s à se réveiller sur la requête suivante (voir backend/render.yaml).
 // Si ça arrive trop souvent une fois lancé, passer sur le plan payant de Render
 // (toujours actif) réglera ça sans avoir à retoucher ce délai.
-const IMAGE_REQUEST_TIMEOUT_MS = 60000;
-const TEXT_REQUEST_TIMEOUT_MS = 20000;
+const IMAGE_REQUEST_TIMEOUT_MS = 90000;
+const TEXT_REQUEST_TIMEOUT_MS = 30000;
 
 async function timedFetch(path, options, timeoutMs) {
   const controller = new AbortController();
@@ -33,9 +33,9 @@ async function timedFetch(path, options, timeoutMs) {
     response = await fetch(`${API_BASE_URL}${path}`, { ...options, signal: controller.signal });
   } catch (err) {
     if (err.name === "AbortError") {
-      throw new Error("Le serveur ne répond pas (délai dépassé). Vérifie ta connexion et réessaie.");
+      throw new Error("Le serveur ne répond pas (délai dépassé). Le backend gratuit peut mettre ~1 min à se réveiller — réessaie une fois.");
     }
-    throw new Error("Impossible de contacter le serveur. Vérifie ta connexion et réessaie.");
+    throw new Error(`Impossible de contacter le serveur (${err.message}). Vérifie ta connexion et réessaie.`);
   } finally {
     clearTimeout(timeoutId);
   }
@@ -53,9 +53,13 @@ async function timedFetch(path, options, timeoutMs) {
 }
 
 function postForm(path, form) {
+  // Pas de "Content-Type" ici : avec un corps FormData, React Native le fixe
+  // lui-même à "multipart/form-data; boundary=..." . Le mettre à la main sans
+  // boundary casse l'envoi (le serveur ne peut plus découper les champs, et sur
+  // les versions récentes de RN la requête échoue avant même de partir).
   return timedFetch(
     path,
-    { method: "POST", body: form, headers: { "Content-Type": "multipart/form-data", "X-App-Secret": APP_SHARED_SECRET } },
+    { method: "POST", body: form, headers: { "X-App-Secret": APP_SHARED_SECRET } },
     IMAGE_REQUEST_TIMEOUT_MS
   );
 }
