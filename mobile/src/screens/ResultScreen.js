@@ -27,7 +27,10 @@ export default function ResultScreen({ imageUri, analysis, onAskQuestion, onBack
     if (scheduled) {
       setReminderSet(true);
     } else {
-      Alert.alert("Rappel non programmé", "Vérifie que les notifications sont autorisées, ou que la date n'est pas déjà passée.");
+      Alert.alert(
+        "Rappel non programmé",
+        "Les rappels ne fonctionnent pas dans Expo Go sur Android (limitation Expo) — il faut un build de l'app. Vérifie aussi que les notifications sont autorisées et que la date n'est pas déjà passée."
+      );
     }
   }
 
