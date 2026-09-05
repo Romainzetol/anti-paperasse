@@ -1,0 +1,30 @@
+# Blueprint Render : décrit le service pour un déploiement reproductible.
+# Sur render.com : New > Blueprint > connecte le repo GitHub contenant ce fichier >
+# Render lit cette config et te la propose à valider avant de créer le service.
+#
+# Plan "free" choisi pour rester à 0€/mois au démarrage. Contrepartie : le service
+# s'endort après 15 min d'inactivité et met ~30-50s à se relancer sur la requête
+# suivante (voir le commentaire sur IMAGE_REQUEST_TIMEOUT_MS dans mobile/src/api.js).
+# Si ça devient gênant avec de vrais utilisateurs, passe sur le plan "starter"
+# (7$/mois, toujours actif) directement dans le dashboard Render, sans rien changer
+# au code.
+services:
+  - type: web
+    name: anti-paperasse-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_WORKSPACE_ID
+        sync: false
+      - key: ANTHROPIC_MODEL
+        value: claude-haiku-4-5-20251001
+      - key: APP_SHARED_SECRET
+        sync: false
+      - key: MAX_DAILY_CLAUDE_CALLS
+        value: "200"
